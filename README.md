@@ -6,17 +6,17 @@ An open source (Apache V2) C# Minecraft Server Software
 ------------------------------------------
 -----------On the Community---------------
 ------------------------------------------
-DragonSpire is also the name of the community, we will be working on a site and forums soon! We are commited to an open source friendly community of developers and players alike. We look forward to *any* ideas you have, be creative and have fun!
+DragonSpire is also the name of the community, we will be working on a site and forums soon! We are commited to an open-source and friendly community of developers and players alike. We look forward to *any* ideas you have, be creative and have fun!
 
-If you want to join our personal Developer team, upload a pull request and state that you would like to be reviewed for a position inside the group, we will review your pull request. Even if you don't make it into the internal team any dev can join in on our public development chat, however note that if we are working we would prefer the chat stay mostly on topic, out private Developers chat will most likely only be used to withdraw from the public one if there is too much chatter and we cannot properly discuss the software in detail.
+If you want to join our personal Developer team, upload a pull request and state that you would like to be reviewed for a position inside the group, we will review your pull request. Even if you don't make it into the internal team any dev can join in on our public development chat, however note that if we are working we would prefer the chat stay mostly on topic, our private Developers chat will most likely only be used to withdraw from the public one if there is too much chatter and we cannot properly discuss the software in detail.
 
 
 ------------------------------------------
 ---------------On Plugins-----------------
 ------------------------------------------
-Note that if you wish to have a plugin featured WITH the server it must also fall under the Apache v2 license (The same license as the server), it will also be scrutinized from top to bottom and possibly optimized before being included into the server distributable.
+Note that if you wish to have a plugin featured *WITH* the server it must also fall under the Apache v2 license (The same license as the server), it will also be scrutinized from top to bottom and possibly optimized before being included into the server distributable.
 
-This does not, however, mean that it becomes ours, a full fledged plugin that is included in the software remains yours, if we like the IDEA of your plugin, but not the way it is written or the setup of it, we may decide to scrap the plugin and write our own, IF that happens you will be credited as the base for the plugin, if you so wish.
+This does not, however, mean that it becomes ours, a full-fledged plugin that is included in the software remains yours, if we like the *IDEA* of your plugin, but not the way it is written or the setup of it, we may decide to scrap the plugin and write our own, *IF* that happens you will be credited as the base for the plugin, if you so wish.
 
 We will do our best to avoid taking code from your uploaded plugins and putting it into our own server without giving you credit, however, this is a very touchy area, we know that, and we have every intention of staying in contact with the original creator through the process if possible.
 
@@ -28,9 +28,9 @@ In order to build and test the server effectively we moved all DLL's to build in
 
 You *shouldn't* have to create this folder yourself, but if you run into errors, check and make sure that it is created
 
-Once you update a dll (and when you FIRST build the server) you need to run a REGULAR build, not a DEBUG build, this will create the dll's and put them into the C:\DragonSpire folder, if you do not build the entire project it will not place them there, the server will start as normal but will load 0 items from the dll's (if the dll's are the wrong version then it will error when trying to load them)
+Once you update a dll (and when you *FIRST* build the server) you need to run a ```REGULAR``` build, not a ```DEBUG``` build, this will create the dll's and put them into the C:\DragonSpire folder, if you do not build the entire project it will not place them there, the server will start as normal but will load 0 items from the dll's (if the dll's are the wrong version then it will error when trying to load them.)
 
-once you have built it, it should debug fine, pulling the dll's from the folder as the working directory, if anyone has a better way to do this (we dont want to have to manually copy the dll's from 5 different sub folders each time they are updated) feel free to add change it!
+Once you have built it, it should debug fine, pulling the dll's from the folder as the working directory, if anyone has a better way to do this (we dont want to have to manually copy the dll's from 5 different sub folders each time they are updated) feel free to add change it!
 
 We will accept pull requests, however, do not be offended if we change your code, if we use your code you may continue to take credit for it.
 

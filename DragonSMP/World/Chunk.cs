@@ -34,6 +34,36 @@ namespace DragonSpire
 			}
 		}
 
+		internal void SetBlock(BlockLocation BL, Material mat, byte meta = 0)
+		{
+			ChunkSection CS = ChunkParts[(int)Math.Floor((double)BL.Y / 16)]; //get the ChunkSection based off the y location
+
+			int x = BL.X % 16;
+			int z = BL.Z % 16;
+
+			if (x < 0) x += 16;
+			if (z < 0) z += 16;
+
+			int y = BL.Y % 16;
+
+			CS.SetBlock(x, y, z, mat.ID, meta);
+		}
+
+		internal Block GetBlock(BlockLocation BL)
+		{
+			ChunkSection CS = ChunkParts[(int)Math.Floor((double)BL.Y / 16)]; //get the ChunkSection based off the y location
+
+			int x = BL.X % 16;
+			int z = BL.Z % 16;
+
+			if (x < 0) x += 16;
+			if (z < 0) z += 16;
+
+			int y = BL.Y % 16;
+
+			return CS.GetBlock(x, y, z);
+		}
+
 		internal byte[] GetData()
 		{
 			try
