@@ -97,7 +97,7 @@
     <Compile Include="Util\Queue\ICacheable.cs" />
     <Compile Include="Util\Queue\MainLoop.cs" />
     <Compile Include="Util\Queue\TorrentException.cs" />
-    <Compile Include="World\Biome.cs" />
+    <Compile Include="World\Generation\Biome.cs" />
     <Compile Include="World\BlockLocation.cs" />
     <Compile Include="World\Chunk.cs" />
     <Compile Include="World\ChunkLocation.cs" />
@@ -119,8 +119,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Networking\SecurityClasses\PacketCryptography.cs" />
     <Compile Include="Server\Server.cs" />
+    <Compile Include="World\Generation\Decorators.cs" />
+    <Compile Include="World\Generation\Noise.cs" />
+    <Compile Include="World\Generation\WorldGeneratorUtils.cs" />
     <Compile Include="World\World.cs" />
-    <Compile Include="World\WorldGenerator.cs" />
+    <Compile Include="World\Generation\WorldGenerator.cs" />
     <Compile Include="Zlib\CRC32.cs" />
     <Compile Include="Zlib\Deflate.cs" />
     <Compile Include="Zlib\DeflateStream.cs" />
