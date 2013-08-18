@@ -12,7 +12,7 @@ namespace DragonSpire
 		static int TimeTickUpdateOffset = 1;
 
 		static long LastPosUpdate = 0;
-		static int PosTickUpdateOffset = 2;
+		static int PosTickUpdateOffset = 5;
 
 		static long LastPlayerListUpdate = 0;
 		static int PlayerListTickUpdateOffset = 20;
@@ -32,6 +32,7 @@ namespace DragonSpire
 		{
 			while (!Server.shouldShutdown)
 			{
+				//Console.WriteLine(Server.TimeTicks);
 				//Server.TimeTicks++;
 				Server.TimeTicks += 1;
 

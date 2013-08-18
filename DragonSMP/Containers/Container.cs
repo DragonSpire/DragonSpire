@@ -6,7 +6,7 @@ namespace DragonSpire
 	/// <summary>
 	/// The container class will hold an array of items, it will be extrapolated into all inventory types
 	/// </summary>
-	public abstract class Container
+	public class Container
 	{
 		SLOT[] slots; //Do not allow the getting of slots directly
 		public short slotCount
@@ -22,11 +22,9 @@ namespace DragonSpire
 			slots = new SLOT[count];
 		}
 
-		public byte[] GetWindowData()
+		public byte[] GetAllSlotData()
 		{
 			var bytes = new List<byte>(); //The array we will fill with data
-
-			bytes.AddRange(BitConverter.GetBytes((short)slots.Length)); //Add the number of slots
 
 			for (int i = 0; i < slots.Length; i++) //Loop through all slots
 			{
@@ -48,9 +46,6 @@ namespace DragonSpire
 			if (slotNumber < 0) throw new IndexOutOfRangeException("Slot index is < 0!!");
 			slots[slotNumber] = slot;
 		}
-
-		public abstract string Name { get; }
-
 	}
 
 	/// <summary>

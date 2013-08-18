@@ -12,8 +12,8 @@ namespace DragonSpire
 		internal static List<PacketData> DeadPackets = new List<PacketData>(); //Holds Dead PacketData objects for reuse
 
 		internal List<PacketData> Packets = new List<PacketData>(); //Holds PacketData data to loop through
-		List<PacketData> WorkingSet = new List<PacketData>(); //Holds the list of PacketData objects that we are currently working with
-		List<PacketData> ListHolder = new List<PacketData>(); //Holds an empty list to swap out with the Packets list
+		private List<PacketData> WorkingSet = new List<PacketData>(); //Holds the list of PacketData objects that we are currently working with
+		private List<PacketData> ListHolder = new List<PacketData>(); //Holds an empty list to swap out with the Packets list
 
 		Client Owner; //The client object that this PacketManager belongs to
 		internal MCStream mcStream; //The stream that were sending data to
@@ -32,17 +32,19 @@ namespace DragonSpire
 			{
 				if (Packets.Count == 0)
 				{
-					Thread.Sleep(10);
+					Thread.Sleep(50); //Same as one tick
 					continue;
 				}
-				lock (Packets)
+				lock (Packets) //Swapping object referances should be the fastest way to get this unlocked (right?)
 				{
 					WorkingSet = Packets;
 					Packets = ListHolder;
 				}
-				foreach (PacketData PD in WorkingSet)
+				foreach (PacketData PD in WorkingSet.ToArray())
 				{
-					if (Owner.isDisconnected || Server.shouldShutdown) return;
+					if (Owner.isDisconnected || Server.shouldShutdown || mcStream == null) return;
+					if (PD == null) continue;
+
 					mcStream.WritePacketType(PD.packetType, PD.encrypted);
 					mcStream.WriteBytes(PD.data.ToArray(), PD.encrypted);
 
@@ -51,7 +53,7 @@ namespace DragonSpire
 				WorkingSet.Clear();
 				ListHolder = WorkingSet;
 
-				//sup pThread.Sleep(100); //change maybe?
+				//Thread.Sleep(100); //change maybe?
 			}
 		}
 

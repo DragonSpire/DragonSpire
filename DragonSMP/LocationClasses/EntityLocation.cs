@@ -185,11 +185,11 @@ namespace DragonSpire
 
 		internal BlockLocation ToBlockLocation()
 		{
-			return new BlockLocation((int)Math.Floor(X), (byte)Math.Floor(Y), (int)Math.Floor(Z), world);
+			return new BlockLocation(MathHelper.RTZ(X), (byte)MathHelper.RTZ(X), MathHelper.RTZ(X), world);
 		}
 		internal ChunkLocation ToChunkLocation()
 		{
-			return new ChunkLocation((int)Math.Floor(X / 16), (int)Math.Floor(Z / 16), world);
+			return new ChunkLocation(MathHelper.RTZ(X / 16), MathHelper.RTZ(Z / 16), world);
 		}
 
 		internal EntityLocation GetOffset(EntityLocation pl)
@@ -208,7 +208,7 @@ namespace DragonSpire
 		}
 		internal static float ByteFractionalToFloat(byte ToConvert)
 		{
-			//TODO verify this, this is not the same as the return method, I highly (almost certainly) believe this is wrong ;)
+			//TODO verify this, this is not the same as the return method, I highly (99.999999999999999999999999% certainly) believe this is wrong ;)
 			return ToConvert * 255;
 		}
 

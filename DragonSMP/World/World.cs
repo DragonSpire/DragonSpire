@@ -43,6 +43,7 @@ namespace DragonSpire
 		internal void SetBlock(BlockLocation BL, Material mat, byte meta = 0)
 		{
 			Chunk C = chunkManager.GetChunkAt(BL.chunkLocation); //Get the chunk based off the blocks ChunkLocation variable
+
 			C.SetBlock(BL, mat, meta);
 
 			foreach (Player p in chunkManager.GetVisiblePlayers(C.CL.regionLocation))

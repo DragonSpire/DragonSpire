@@ -8,7 +8,7 @@ namespace DragonSpire
 	/// <summary>
 	/// This controls the windows and interactions with windows that a player has
 	/// </summary>
-	class PlayerWindowManager
+	public class PlayerWindowManager
 	{
 		internal bool isCurrentWindowInventory = true; //Whether or not the player is currently working out of their inventory
 		internal SLOT CursorSlot; //This is the item that is held in the player hand
@@ -76,15 +76,48 @@ namespace DragonSpire
 	/// </summary>
 	public class Window
 	{
-		WindowTypeBase WindowType; //Window types are not linked to specific types of windows (IE a furnace does not HAVE to be in a furnace, but all furnaces will have furnace windows)
-		bool isEntityWindow = false; //True if were working with a window thats from a living creature or other player
+		List<Player> players = new List<Player>(); //This holds a list of the players that currently have this window open, this is checked each time we loop through it to be sure this player is still online
 
-		Entity e; //Null if this is not an EntityWindow
-		BlockLocation BL; //This is only set if we have a BLOCK that has a window
+		internal WindowTypeBase WindowType; //Window types are not linked to specific types of windows (IE a furnace does not HAVE to be in a furnace, but all furnaces will have furnace windows)
+		internal bool isEntityWindow = false; //True if were working with a window thats from a living creature or other player
+
+		internal Entity e; //Null if this is not an EntityWindow
+		internal BlockLocation BL; //This is only set if we have a BLOCK that has a window
 
 		internal bool Click(short SN, byte button, byte Mode, SLOT CI, PlayerWindowManager PWM)
 		{
 			return WindowType.Click(SN, button, Mode, CI, this, PWM);
+		}
+
+		internal string Title;
+
+		internal Container container;
+
+		internal Window(bool isEntity, dynamic EidOrLocation, WindowTypeBase windowType, string name = "")
+		{
+			isEntityWindow = isEntity;
+			if (isEntity) e = EidOrLocation;
+			else BL = EidOrLocation;
+			WindowType = windowType;
+			if (name == "") Title = windowType.BaseName;
+			else Title = name;
+
+			container = new Container(windowType.SlotCount);
+		}
+
+		public void SetItem(short slot, SLOT data)
+		{
+			container.SetSlot(slot, data);
+
+			foreach(Player p in players.ToArray())
+			{
+				if (!p.client.loggedin || p.client.isDisconnected || p.WindowManager.CurrentWindow != this) //Player cannot possibly have this window open
+					{ players.Remove(p); } //Remove this player from the player list
+
+				//This player has this window open, so we get to update the slot we have updated!
+				//p.client.SetSlot
+
+			}
 		}
 	}
 
@@ -119,7 +152,7 @@ namespace DragonSpire
 		/// This bool represents whether all players see the same instance of this window or not
 		/// </summary>
 		public abstract bool isCrossPlayer { get; }
-
+		
 		/// <summary>
 		/// This method is called when a player clicks on the window
 		/// </summary>
@@ -130,6 +163,53 @@ namespace DragonSpire
 		/// <param name="w">The WINDOW class that this click is referring to, you can get most of the information you need about the window here, any changes here will be pushed to all players that have this same window open, assuming its a crossplayer window</param>
 		/// <param name="PWM">The PlayerWindowManager class that this click was called from, in this class you can get the information for the SLOT attached to the cursor and information on the player</param>
 		/// <returns>This should return a bool as to whether or not this transaction has completed succesfully, return false to reject this transaction (in which case no changes should be made to the inventory.</returns>
-		public abstract bool Click(short SlotNumber, byte bytton, byte mode, SLOT CI, Window w, PlayerWindowManager PWM);
+		public abstract bool Click(short SlotNumber, byte button, byte mode, SLOT CI, Window w, PlayerWindowManager PWM);
+	}
+
+	public class WindowTypes
+	{
+		byte Chest = 0;
+		byte LargeChest = 0;
+
+		byte WorkBench = 1;
+		byte CraftingBench = 1;
+
+		byte Furnace = 2;
+		byte Dispenser = 3;
+		byte EnchantmentTable = 4;
+		byte BrewingStand = 5;
+		byte NPCTrade = 6;
+		byte Beacon = 7;
+		byte Anvil = 8;
+		byte Hopper = 9;
+
+		public short DefaultSlotCount(byte WindowType)
+		{
+			switch (WindowType)
+			{
+				case 0: //Chest (note that im only returning the size of a SMALL chest
+					return 27;
+				case 1: //Workbench
+					return 10;
+				case 2: //Furnace
+					return 3;
+				case 3: //Dispenser
+					return 9;
+				case 4: //EnchantmentTable
+					return 1;
+				case 5: //BrewingStand
+					return 4;
+				case 6: //NPC Trade
+					return 3;
+				case 7: //Beacon
+					return 1;
+				case 8: //Anvil
+					return 3;
+				case 9: //Hopper
+					return 5;
+				default:
+					return 0;
+			}
+		}
 	}
 }

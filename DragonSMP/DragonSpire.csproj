@@ -72,12 +72,13 @@
     <Compile Include="Containers\Recipes.cs" />
     <Compile Include="Containers\Inventory.cs" />
     <Compile Include="Containers\Window.cs" />
+    <Compile Include="LocationClasses\RegionLocation.cs" />
     <Compile Include="Networking\DragonBitConverter.cs" />
     <Compile Include="Entity\Entity.cs" />
     <Compile Include="Entity\ItemStack.cs" />
     <Compile Include="Entity\Mob.cs" />
     <Compile Include="Entity\Player.cs" />
-    <Compile Include="Entity\PlayerLocation.cs" />
+    <Compile Include="LocationClasses\EntityLocation.cs" />
     <Compile Include="Materials\Block.cs" />
     <Compile Include="Materials\Item.cs" />
     <Compile Include="Materials\Material.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Server\TickTimer.cs" />
     <Compile Include="Util\ConsoleLogger.cs" />
     <Compile Include="Util\Extensions.cs" />
+    <Compile Include="Util\MathHelper.cs" />
     <Compile Include="Util\Queue\Cache.cs" />
     <Compile Include="Util\Queue\Check.cs" />
     <Compile Include="Util\Queue\Enums.cs" />
@@ -98,9 +100,9 @@
     <Compile Include="Util\Queue\MainLoop.cs" />
     <Compile Include="Util\Queue\TorrentException.cs" />
     <Compile Include="World\Generation\Biome.cs" />
-    <Compile Include="World\BlockLocation.cs" />
+    <Compile Include="LocationClasses\BlockLocation.cs" />
     <Compile Include="World\Chunk.cs" />
-    <Compile Include="World\ChunkLocation.cs" />
+    <Compile Include="LocationClasses\ChunkLocation.cs" />
     <Compile Include="World\ChunkManager.cs" />
     <Compile Include="World\ChunkSection.cs" />
     <Compile Include="Networking\Client.cs" />

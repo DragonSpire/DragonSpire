@@ -13,6 +13,8 @@ namespace DragonSpire
 		{
 			ConsoleLogger.InitLogTypes(); //Initialize the LOG Types (this needs to be set before we do ANYTHING else as Server.Log relies on this!
 
+			TestMethod();
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
@@ -23,6 +25,10 @@ namespace DragonSpire
 				Console.ReadLine();
 			}
 			//Application.Run(new Form1()); //Start the GUI ones everything else is done
+		}
+		static void TestMethod()
+		{
+			
 		}
 	}
 }

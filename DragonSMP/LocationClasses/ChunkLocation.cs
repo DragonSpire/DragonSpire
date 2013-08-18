@@ -29,11 +29,18 @@ namespace DragonSpire
 				return _z;
 			}
 		}
+
 		public RegionLocation regionLocation
 		{
 			get
 			{
-				return new RegionLocation((int)Math.Floor((double)X / ChunkManager.RegionSize), (int)Math.Floor((double)Z / ChunkManager.RegionSize));
+				int rX = X;
+				int rZ = Z;
+				if (X > 0) rX += 1;
+				else rX -= 1;
+				if (Z > 0) rZ += 1;
+				else rZ -= 1;
+				return new RegionLocation(MathHelper.RTZ(rX / ChunkManager.RegionSize), MathHelper.RTZ(rZ / ChunkManager.RegionSize), world);
 			}
 		}
 
@@ -83,32 +90,6 @@ namespace DragonSpire
 		public override string ToString()
 		{
 			return X + " " + Z + " " + world.Name;
-		}
-	}
-	public struct RegionLocation
-	{
-		public int X;
-		public int Z;
-
-		internal RegionLocation(int x, int z)
-		{
-			X = x;
-			Z = z;
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (obj == null) return false;
-			RegionLocation RL = (RegionLocation)obj;
-			return (X == RL.X && Z == RL.Z);
-		}
-		public static bool operator ==(RegionLocation RL, RegionLocation RL2)
-		{
-			return (RL.X == RL2.X && RL.Z == RL2.Z);
-		}
-		public static bool operator !=(RegionLocation RL, RegionLocation RL2)
-		{
-			return (RL.X != RL2.X || RL.Z != RL2.Z);
 		}
 	}
 }

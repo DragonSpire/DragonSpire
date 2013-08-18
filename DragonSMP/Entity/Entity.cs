@@ -13,13 +13,27 @@ namespace DragonSpire
 		internal Physics physics; //This is the physics attached to this entity
 
 		public World world; //The world in which this entity resides
-		public Chunk currentChunk //The chunk in which this entity currently resides
+
+		public Chunk _currentChunk;
+
+		public Chunk currentChunk
 		{
 			get
 			{
-				return world.GetChunkAt(new ChunkLocation((int)(physics.Location.X / 16), (int)(physics.Location.Z / 16), world));
+				if (_currentChunk == null) return GetCurrentChunk;
+				else return _currentChunk;
+			}
+		}//The chunk in which this entity currently resides
+
+		public Chunk GetCurrentChunk
+		{
+			get
+			{
+				_currentChunk = world.GetChunkAt(new ChunkLocation((int)(physics.Location.X / 16), (int)(physics.Location.Z / 16), world));
+				return _currentChunk;
 			}
 		}
+
 		public Chunk oldChunk = null; //The last chunk this entity was in
 		internal RegionLocation currentRegion
 		{
@@ -71,7 +85,7 @@ namespace DragonSpire
 
 		public bool isOnFire = false;
 
-		internal Inventory inventory = new Inventory(); //All Living Entities will have full inventories (This will allow us better handling later on)
+		//internal Inventory inventory = new Container(9); //All Living Entities will have full inventories (This will allow us better handling later on)
 
 		public override bool Equals(object obj)
 		{

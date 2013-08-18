@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DragonSpire
 {
@@ -64,20 +65,18 @@ namespace DragonSpire
 			LoadChunk(new ChunkLocation(x, z, world), Persistant);
 		}
 
-		void LoadRegion(int x, int z)
+		void LoadRegion(int x, int z) //The location of the region (center of region)
 		{
-			bool isStartingRegion = (x == 0 && z == 0);
-
-			int start_x = (x * RegionSize) - RegionSizeOffset;
-			int start_z = (z * RegionSize) - RegionSizeOffset;
-			int end_x = (x * RegionSize) + RegionSizeOffset;
-			int end_z = (z * RegionSize) + RegionSizeOffset;
+			int start_x = (x * 3) - RegionSizeOffset;
+			int end_x = (x * 3) + RegionSizeOffset;
+			int start_z = (z * 3) - RegionSizeOffset;
+			int end_z = (z * 3) + RegionSizeOffset;
 
 			for (int lx = start_x; lx <= end_x; lx++)
 			{
 				for (int lz = start_z; lz <= end_z; lz++)
 				{
-					LoadChunk(lx, lz, isStartingRegion);
+					LoadChunk(lx, lz, false);
 				}
 			}
 		}
@@ -92,11 +91,8 @@ namespace DragonSpire
 
 		internal Chunk GetChunkAt(ChunkLocation Cl)
 		{
-			if(!Chunks.ContainsKey(Cl))
-				LoadRegion(Cl.regionLocation);
-
 			if (!Chunks.ContainsKey(Cl))
-				LoadChunk(Cl, false);
+				LoadRegion(Cl.regionLocation); //load the entire region
 			return Chunks[Cl];
 		}
 
@@ -107,6 +103,11 @@ namespace DragonSpire
 			int x = RL.X * RegionSize;
 			int z = RL.Z * RegionSize;
 
+			var C = new ChunkLocation(x, z, world);
+
+			if (C.regionLocation != RL) Server.Log("Region location mismatch!", LogTypesEnum.Critical);
+			//else Server.Log("Region Location Checks out!", LogTypesEnum.System);
+
 			int start_x = (x) - RegionSizeOffset;
 			int start_z = (z) - RegionSizeOffset;
 			int end_x = (x) + RegionSizeOffset;
@@ -116,7 +117,9 @@ namespace DragonSpire
 			{
 				for (int lz = start_z; lz <= end_z; lz++)
 				{
-					chunks.Add(GetChunkAt(new ChunkLocation(lx, lz, world)));
+					var CL = new ChunkLocation(lx, lz, world);
+					//Console.WriteLine("Adding Chunk: " + CL.ToString());
+					chunks.Add(GetChunkAt(CL));
 				}
 			}
 
@@ -136,9 +139,9 @@ namespace DragonSpire
 				for (int z = 0 - RegionViewDistanceOffset; z <= RegionViewDistanceOffset; z++)
 				{
 					int Loop_X = RL.X + x;
-					int Loop_Z = RL.X + z;
+					int Loop_Z = RL.Z + z;
 
-					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z);
+					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z, world);
 
 					foreach (Chunk c in GetRegionChunks(CRL))
 					{
@@ -160,7 +163,7 @@ namespace DragonSpire
 					int Loop_X = RL.X + x;
 					int Loop_Z = RL.X + z;
 
-					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z);
+					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z, world);
 
 					foreach (Chunk c in GetRegionChunks(RL))
 					{
@@ -182,7 +185,7 @@ namespace DragonSpire
 					int Loop_X = RL.X + x;
 					int Loop_Z = RL.X + z;
 
-					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z);
+					RegionLocation CRL = new RegionLocation(Loop_X, Loop_Z, world);
 
 					foreach (Chunk c in GetRegionChunks(RL))
 					{

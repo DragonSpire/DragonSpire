@@ -56,11 +56,14 @@ namespace DragonSpire
 		internal bool isEating = false; //Eating Drinking Blocking
 		internal bool isInvisible = false;
 
+		public PlayerWindowManager WindowManager;
+
 		internal Player(Client c, World w)
 		{
 			world = w;
 			physics = new Physics(new EntityLocation(world.Spawn.playerLocation), this, PhysicsType.Gravity);
 			client = c;
+			WindowManager = new PlayerWindowManager(this);
 		}
 
 		public override void PhysicsCall()

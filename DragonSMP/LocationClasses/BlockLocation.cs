@@ -90,12 +90,12 @@ namespace DragonSpire
 
 		void CalculateAdditionalData()
 		{
-			int cx = (int)Math.Floor((double)_x / 16); //Get hte x/z in chunk coordinates, converting via math.floor to make sure were getting lower bounds
+			int cx = (int)Math.Floor((double)_x / 16); //Get the x/z in chunk coordinates, converting via math.floor to make sure were getting lower bounds
 			int cz = (int)Math.Floor((double)_z / 16);
 			//if (_x < 0) cx--; //If BL_X or BL_Z are negative then we need to go DOWN one more chunk (because 0 0 is a positive only chunk)
 			//if (_z < 0) cz--;
+
 			_chunkLocation = _chunkLocation.MoveTo(cx, cz, world); //Get the chunk based on the cx and cz variables defined above
-			
 			_playerLocation = _playerLocation.MoveTo(X, Y, Y, Z, true);
 		}
 

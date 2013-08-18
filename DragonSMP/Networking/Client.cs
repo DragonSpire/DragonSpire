@@ -309,9 +309,12 @@ namespace DragonSpire
 			Face face = (Face)stream.ReadByte(); //The face of the block this player is hitting
 			try
 			{
-				if (status == DiggingStatus.FinishedDigging)
+				if (status == DiggingStatus.FinishedDigging || (player.isInCreative && status == DiggingStatus.StartedDigging))
 				{
 					BlockLocation BL = new BlockLocation(x, y, z, player.world);
+
+					//Console.WriteLine("BLOCK: " + BL.ToString());
+					
 					Block b = player.world.GetBlock(BL);
 
 					if (b.DirectAccess.OnBreak(BL, player, player.world))
@@ -725,7 +728,7 @@ namespace DragonSpire
 					int Loop_X = CurrentRegion_X + x; //Loop X = Region X + Current X
 					int Loop_Z = CurrentRegion_Z + z; //Loop Z = Region Z + Current Z
 
-					RegionsWeNeed.Add(new RegionLocation(Loop_X, Loop_Z)); //Create a list of the regions in viewable distance
+					RegionsWeNeed.Add(new RegionLocation(Loop_X, Loop_Z, player.world)); //Create a list of the regions in viewable distance
 				}
 			}
 
@@ -950,7 +953,7 @@ namespace DragonSpire
 		} //TODO all
 		void SendHeldItemChange()
 		{
-			SendHeldItemChange(player.inventory.SelectedSlot);
+			//SendHeldItemChange(player.inventory.SelectedSlot);
 		}
 		void SendHeldItemChange(short SlotID)
 		{
@@ -986,7 +989,7 @@ namespace DragonSpire
 			PD.Add((int)p.physics.Location.AZ);
 			PD.Add(p.physics.Location.YawByte);
 			PD.Add(p.physics.Location.PitchByte);
-			PD.Add(p.inventory.CurrentItem);
+			PD.Add(0);
 			PD.Add(p.GenerateMetaData());
 			PM.Packets.Add(PD);
 
@@ -1184,33 +1187,58 @@ namespace DragonSpire
 		}
 		#endregion
 		#region Window and Inventory
-		void SendOpenWindow()
+		internal void SendOpenWindow(byte WindowID, Window w)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.OpenWindow);
+			PD.Add(WindowID); //The players id for this window (this is player specific)
+			PD.Add(w.WindowType.InventoryType); //The inventory type (workbench, chest, furnace etc)
+			PD.Add(w.Title); //The window title
+			PD.Add(w.WindowType.SlotCount); //The number of slots (NOT including player inventory
+			PD.Add(true); //We will always use the title we send to the client
+			if(w.WindowType.InventoryType == 11 && w.isEntityWindow) PD.Add(w.e.EId); //We only send this if were using an animal chest (inventory type = 11) (horses silly!)
+			PM.Packets.Add(PD);
 		}
-		void SendCloseWindow()
+		internal void SendForceCloseWindow(byte WindowID)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.CloseWindow);
+			PD.Add(WindowID);
+			PM.Packets.Add(PD);
 		}
-		void SendSetSlot()
+		internal void SendSetSlot(byte WindowID, short Slot, SLOT data)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.SetSlot);
+			PD.Add(WindowID);
+			PD.Add(Slot);
+			PD.Add(data.GeneratePacketSlotData());
+			PM.Packets.Add(PD);
 		}
-		void SendSetWindowItems()
+		void SendSetWindowItems(byte WindowID, Window w)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.SetWindowItems);
+			PD.Add(WindowID); //Window ID
+			PD.Add(w.WindowType.SlotCount); //Number of slots
+			PD.Add(w.container.GetAllSlotData()); //Slot Data
+			PM.Packets.Add(PD);
 		}
-		void SendUpdateWindowProperty()
+		void SendUpdateWindowProperty(byte WindowID, short Property, short Value)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.UpdateWindowProperty);
+			PD.Add(WindowID); //Window ID
+			PD.Add(Property); //Property to update (arrow or fuel)
+			PD.Add(Value); //The value of the property
+			PM.Packets.Add(PD);
 		}
-		void SendConfirmTransaction()
+		void SendConfirmTransaction(byte WindowID, short ActionNumber, bool isAccepted)
 		{
-
+			var PD = PM.GetFreshPacket(PacketType.UpdateWindowProperty);
+			PD.Add(WindowID); //Window ID
+			PD.Add(ActionNumber); //The action number we are referancing
+			PD.Add(isAccepted); //Whether or not we accept this transaction
+			PM.Packets.Add(PD);
 		}
 		void SendCreativeInventoryAction()
 		{
-
+			//Not really sure how this works, or if we are going to use it...
 		}
 		void SendTileEditorOpen()
 		{
@@ -1218,7 +1246,11 @@ namespace DragonSpire
 		}
 		void SendItemData()
 		{
-
+			//This
+			//Packet
+			//Also
+			//Sucks
+			//Ass
 		}
 		#endregion
 		#region Effects
@@ -1310,7 +1342,7 @@ namespace DragonSpire
 		#region Movement Methods
 		internal void OnMove()
 		{
-			if (player.currentChunk != player.oldChunk)
+			if (player.GetCurrentChunk != player.oldChunk)
 			{
 				//Console.WriteLine(player.name + " Chunk Changed!");
 				//Console.WriteLine("Player " + player.location.ToString());

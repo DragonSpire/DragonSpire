@@ -11,6 +11,8 @@ namespace DragonSpire
 		internal Dictionary<int, Mob> Mobs = new Dictionary<int, Mob>(); //A list of all MOBS in this chunk (sheep cows creepers etc)
 		internal Dictionary<int, ObjectEntity> Objects = new Dictionary<int, ObjectEntity>(); //A list of all OBJECTS in this chunk (boats minecarts paintings items etc)
 
+		internal Dictionary<BlockLocation, Window> Windows = new Dictionary<BlockLocation, Window>(); //This holds the windows that have been created in the map, a window is not created when a block is set but rather the first time it is opened
+
 		internal World World;
 		internal ChunkSection[] ChunkParts = new ChunkSection[16]; //they are all this size and we always want one, so may as well make it default
 		internal byte[] BiomeData = new byte[256];
@@ -51,7 +53,7 @@ namespace DragonSpire
 
 		internal Block GetBlock(BlockLocation BL)
 		{
-			ChunkSection CS = ChunkParts[(int)Math.Floor((double)BL.Y / 16)]; //get the ChunkSection based off the y location
+			ChunkSection CS = ChunkParts[MathHelper.RTZ(BL.Y / 16)]; //get the ChunkSection based off the y location
 
 			int x = BL.X % 16;
 			int z = BL.Z % 16;
