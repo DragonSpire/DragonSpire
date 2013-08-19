@@ -33,7 +33,7 @@
 		public bool canBurn { get { return (BurnRate > 0); } } //Is dynamically set, cannot be overriden
 		/// <summary>
 		/// How fast this block burns in ticks.
-		/// 20 seconds = 1 tick
+		/// 20 ticks = 1 second
 		/// 0 = Non-Burnable
 		/// </summary>
 		public virtual byte BurnRate { get { return 0; } } //Does not NEED to be overriden, defaults to 0 (non burnable)
