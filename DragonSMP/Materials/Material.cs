@@ -441,6 +441,22 @@ namespace DragonSpire
 		public abstract dynamic DirectAccess { get; }
 
 		/// <summary>
+		/// Whether or not this item can be stacked.
+		/// We don't need to make this abstract since we dynamically set the value based upon MaximumStack.
+		/// </summary>
+		public bool isStackable { get { return (MaximumStack > 1); } }
+		/// <summary>
+		/// The maximum amount that can be in one stack of this item.
+		/// </summary>
+		public virtual byte MaximumStack
+		{
+			get
+			{
+				return 64; //default to 64 (for block types)
+			}
+		}
+
+		/// <summary>
 		/// This is the ID of the material
 		/// </summary>
 		public abstract short ID { get; }

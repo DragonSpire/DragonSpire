@@ -338,18 +338,45 @@ namespace DragonSpire
 			int blockX = stream.ReadInt(); //The X coordinate where we are placing this block
 			byte blockY = stream.ReadByte(); //The Y Coordinate where we are placing this block
 			int blockZ = stream.ReadInt(); //The Z Coordinate where we are placing this block
-			Direction direction = (Direction)stream.ReadByte(); //The Direcion this block should be facing
+			Face blockFace = (Face)stream.ReadByte(); //The Direcion this block should be facing
 			SLOT HeldItem = stream.ReadSlot(); //Information on the held iteam
 			byte CursorX = stream.ReadByte(); //The position of the cursor within this block (X)
 			byte CursorY = stream.ReadByte(); //The position of the cursor within this block (Y)
 			byte CursorZ = stream.ReadByte(); //The position of the cursor within this block (Z)
+
+			if (blockFace == Face.posX) blockX += 1;
+			if (blockFace == Face.negX) blockX -= 1;
+			if (blockFace == Face.posY) blockY += 1;
+			if (blockFace == Face.negY) blockY -= 1;
+			if (blockFace == Face.posZ) blockZ += 1;
+			if (blockFace == Face.negZ) blockZ -= 1;
+
+			SLOT slot = player.WindowManager.inventory.GetSlot(player.WindowManager.inventory.CurrentSlotIndex);
+			
+			if ((slot.material == null && !player.isInCreative) || HeldItem.material == null || HeldItem.material.ID == -1 || HeldItem.material.ID == 0) return; //Return null is either (slot is null and we arent in creative) or we are placing null/air
+
+			if (!player.isInCreative && slot.material != HeldItem.material) //if we arent in creative, verify that the inventory matches
+			{
+				SendDisconnect("Inventory mismatch!");
+				return;
+			}
+			if (HeldItem.material.isBlock)
+			{
+				player.world.SetBlock(new BlockLocation(blockX, blockY, blockZ, player.world), HeldItem.material, (byte)HeldItem.Meta);
+				slot.Count -= 1;
+				if (slot.Count == 0)
+				{
+					player.WindowManager.inventory.SetSlot(player.WindowManager.inventory.CurrentSlotIndex, Container.nullSlot);
+				}
+			}
 		}
 		/// <summary>
 		/// Received when the player changes the slot they have selected on their hotbar
 		/// </summary>
 		void ReceiveHeldItemChange()
 		{
-			short SlotID = stream.ReadShort();
+			player.WindowManager.inventory.CurrentSlot = stream.ReadShort();
+			Console.WriteLine(player.WindowManager.inventory.CurrentSlot + "");
 		}
 		/// <summary>
 		/// Send when an entity should change animation
@@ -995,7 +1022,7 @@ namespace DragonSpire
 
 			player.HasSpawned.Add(p);
 		}
-		void SendCollectItem(Entity Collector, Entity ItemBeingCollected)
+		internal void SendCollectItem(Entity Collector, Entity ItemBeingCollected)
 		{
 			if (debug) Console.WriteLine("SendCollectItem");
 
@@ -1066,7 +1093,14 @@ namespace DragonSpire
 			PD.Add((short)e.physics.Velocity.Z);
 			PM.Packets.Add(PD);
 		}
-		void SendDestroyEntity(List<int> entities)
+		internal void SendDestroyEntity(Entity e)
+		{
+			var PD = PM.GetFreshPacket(PacketType.DestroyEntity);
+			PD.Add((byte)1);
+			PD.Add(e.EId);
+			PM.Packets.Add(PD);
+		}
+		internal void SendDestroyEntity(List<int> entities)
 		{
 			if (debug) Console.WriteLine("SendDestroyEntity");
 
@@ -1206,6 +1240,8 @@ namespace DragonSpire
 		}
 		internal void SendSetSlot(byte WindowID, short Slot, SLOT data)
 		{
+			Console.WriteLine("Set Slot Sent!");
+
 			var PD = PM.GetFreshPacket(PacketType.SetSlot);
 			PD.Add(WindowID);
 			PD.Add(Slot);

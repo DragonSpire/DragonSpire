@@ -20,10 +20,12 @@ namespace DragonSpire
 		static Player[] players;
 		static Player[] removeFromPlayerList;
 
+		static Entity[] Entities;
+
 		internal static void Initialize()
 		{
 			new Thread(StartMainTicking).Start();
-			//new Thread(StartOnMoveTicking).Start();
+			new Thread(StartPhysicsTicking).Start();
 			//new Thread(StartAITicking).Start();
 
 		}
@@ -57,11 +59,18 @@ namespace DragonSpire
 				Thread.Sleep(50);
 			}
 		}
-		static void StartOnMoveTicking()
+		static void StartPhysicsTicking()
 		{
 			while (!Server.shouldShutdown)
 			{
+				lock (Entity.Entities) Entities = Entity.Entities.ToArray();
 
+				foreach (Entity E in Entities)
+				{
+					E.PhysicsCall();
+				}
+
+				Thread.Sleep(100);
 			}
 		}
 
@@ -128,6 +137,11 @@ namespace DragonSpire
 
 				p.client.SendRawPacket(PacketType.PlayerListItem, PlayerListData);
 			}
+		}
+
+		static void EntityPhysicsUpdate()
+		{
+			
 		}
 
 		static byte[] GeneratePlayerListData()

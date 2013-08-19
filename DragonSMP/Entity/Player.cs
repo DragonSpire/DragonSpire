@@ -7,6 +7,8 @@ namespace DragonSpire
 	{
 		internal static List<Player> ToRemoveFromPlayerList = new List<Player>();
 
+		public float PickupRange = 1.5f;
+
 		internal static Dictionary<int, Player> players = new Dictionary<int, Player>();
 		internal List<RegionLocation> RegionsLoaded = new List<RegionLocation>();
 

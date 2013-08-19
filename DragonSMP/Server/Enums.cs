@@ -33,6 +33,7 @@ namespace DragonSpire
 		West,
 		NorthWest
 	}
+
 	public enum PacketType
 	{
 		KeepAlive = 0x00,
@@ -130,14 +131,12 @@ namespace DragonSpire
 	}
 	public enum Face
 	{
-		//TODO maybe name the face sides? (IE We should test these names ingame :) )
 		negY = 0, //Bottom
 		posY = 1, //Top
-		negZ = 2, //North?
-		posZ = 3, //South?
-		negX = 4, //West?
-		posX = 5, //East?
-
+		negZ = 2, //-Z
+		posZ = 3, //+Z
+		negX = 4, //-X
+		posX = 5, //+X
 	}
 	public enum PlayerAnimations
 	{

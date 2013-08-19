@@ -3,16 +3,6 @@
 	public abstract class Item : Material
 	{
 		/// <summary>
-		/// Whether or not this item can be stacked.
-		/// We don't need to make this abstract since we dynamically set the value based upon MaximumStack.
-		/// </summary>
-		public bool isStackable { get { return (MaximumStack > 1); } }
-		/// <summary>
-		/// The maximum amount that can be in one stack of this item.
-		/// </summary>
-		public abstract byte MaximumStack { get; }
-
-		/// <summary>
 		/// Whether or not you can enchant this item.
 		/// </summary>
 		public virtual bool isEnchantable { get { return false; } }

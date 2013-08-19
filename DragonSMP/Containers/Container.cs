@@ -8,6 +8,8 @@ namespace DragonSpire
 	/// </summary>
 	public class Container
 	{
+		public static SLOT nullSlot = new SLOT(MaterialManager.GetMaterial(-1), 0, 0, new byte[0]);
+
 		SLOT[] slots; //Do not allow the getting of slots directly
 		public short slotCount
 		{
@@ -38,7 +40,14 @@ namespace DragonSpire
 		{
 			if (slotNumber >= slots.Length) throw new IndexOutOfRangeException("Slot index is larger than the number of slots in container!");
 			if (slotNumber < 0) throw new IndexOutOfRangeException("Slot index is < 0!!");
-			return slots[slotNumber];
+			if (slots[slotNumber].material == null)
+			{
+				return nullSlot;
+			}
+			else
+			{
+				return slots[slotNumber];
+			}
 		}
 		public void SetSlot(int slotNumber, SLOT slot)
 		{
@@ -54,7 +63,7 @@ namespace DragonSpire
 	public struct SLOT
 	{
 		/// <summary>
-		/// The Material that is in this slot (not that id -1 is NOTHING
+		/// The Material that is in this slot (note that id -1 is NOTHING)
 		/// </summary>
 		public Material material;
 		/// <summary>
@@ -107,7 +116,7 @@ namespace DragonSpire
 		{
 			var bytes = new List<byte>();
 
-			if (material.ID == -1)
+			if (material == null || material.ID == -1)
 			{
 				bytes.AddRange(DBC.GetBytes((short)-1));
 				return bytes.ToArray();

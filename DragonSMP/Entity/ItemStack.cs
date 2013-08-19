@@ -5,6 +5,8 @@ namespace DragonSpire
 {
 	public class ItemStack : ObjectEntity
 	{
+		internal static List<ItemStack> ItemStacks = new List<ItemStack>();
+
 		/// <summary>
 		/// This is EntityObjectSpawnTypes.ItemStack
 		/// </summary>
@@ -20,11 +22,39 @@ namespace DragonSpire
 			world = pl.world;
 			physics = new Physics(pl, this, PhysicsType.Item);
 			ItemData = data;
+
+			Entities.Add(this);
 		}
 
 		public override void PhysicsCall()
 		{
-			//TODO have this move closer to the player as they get near?
+			Player[] pList = new Player[currentChunk.Players.Count];
+			currentChunk.Players.Values.CopyTo(pList, 0);
+			foreach (Player p in pList)
+			{
+				if (!p.client.loggedin || p.client.isDisconnected) continue;
+
+				if (p.location.GetDistance(physics.Location) < p.PickupRange)
+				{
+					if (p.WindowManager.AddItemToInventory(ItemData))
+					{
+						Entity.Entities.Remove(this);
+						currentChunk.Objects.Remove(EId);
+
+						foreach (Player p2 in pList)
+						{
+							if (!p.client.loggedin || p.client.isDisconnected) continue;
+							p2.client.SendCollectItem(p, this);
+						}
+						foreach (Player p3 in world.chunkManager.GetVisiblePlayers(currentRegion))
+						{
+							p3.client.SendDestroyEntity(this);
+						}
+
+						return;
+					}
+				}
+			}
 		}
 		public override byte[] GenerateMetaData()
 		{

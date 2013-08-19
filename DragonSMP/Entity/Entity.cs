@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DragonSpire
 {
@@ -7,6 +8,8 @@ namespace DragonSpire
 	/// </summary>
 	public abstract class Entity
 	{
+		public static List<Entity> Entities = new List<Entity>();
+
 		public static Random random = new Random();
 
 		public int EId; //This is the Entity ID, unique among all entities

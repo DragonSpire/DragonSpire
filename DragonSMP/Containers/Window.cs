@@ -13,11 +13,12 @@ namespace DragonSpire
 		internal bool isCurrentWindowInventory = true; //Whether or not the player is currently working out of their inventory
 		internal SLOT CursorSlot; //This is the item that is held in the player hand
 
-		
 		internal Window[] Windows = new Window[16]; //Holds current windows (note that on accesing we need to verify the window is still legit!
 		internal byte WindowIndex = 1; //Current Window Index
 
 		internal Player p; //The player that this manager belongs to
+
+		internal Inventory inventory;
 
 		//Get the current window that the player is working in
 		internal Window CurrentWindow
@@ -31,8 +32,47 @@ namespace DragonSpire
 
 		internal PlayerWindowManager(Player Owner) //Constructor for the PlayerWindowManager
 		{
-			//TODO Create user inventory
 			p = Owner;
+			inventory = new Inventory(Owner, this);
+		}
+
+		internal bool AddItemToInventory(SLOT data)
+		{
+			int slotNumber = 27; //Start at the first slot for the hotbar
+
+			while(true) //we should likely check for inf. loops....
+			{
+				SLOT currentSlot = inventory.MainInventory.GetSlot(slotNumber);
+
+				if (currentSlot.material.ID == -1) //Check if slot is empty
+				{
+					inventory.SetSlot(slotNumber, data);
+					return true;
+				}
+				int MaxStack = currentSlot.material.DirectAccess.MaximumStack;
+				if (currentSlot.Count < MaxStack && currentSlot.material.ID == data.material.ID && currentSlot.Meta == data.Meta)
+				{
+					Console.WriteLine("All data matches, adding to stack");
+					int countCanAdd = MaxStack - currentSlot.Count; //The number of items we can add to this stack
+
+					if (countCanAdd >= data.Count) //We can add our entire stack
+					{
+						data.Count += currentSlot.Count; //Modify the count of the slot
+						inventory.SetSlot(slotNumber, data); //Set the slot in inventory
+						return true; //Return pickup is accepted
+					}
+					else
+					{
+						//TODO split into two parts and only pick up what we can, we may have to return a slot for this, or spit out the items we cannot pick up...
+					}
+				}
+
+				//Incrementation area
+				if(slotNumber == 26) return false; //Only return false AFTER checking slot 26
+				slotNumber++; //Increment at the end so we can check the first slot of the hotbar and last slot of inventory (its an odd setup, just go with it)
+				if(slotNumber == 36) slotNumber = 0; //Return to zero after checking the hotbar (36 is oob)
+			}
+			return false;
 		}
 
 		internal void OpenWindow(Window w)
