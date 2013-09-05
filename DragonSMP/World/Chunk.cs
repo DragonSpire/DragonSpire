@@ -20,6 +20,8 @@ namespace DragonSpire
 		internal bool isPersistant = false; //If true this chunk will not unload (used for Spawn Area for now)
 		internal bool isLoaded = false; //We can have this chunk ready to be loaded, but not yet loaded ;)
 
+		internal byte[] Heightmap = new byte[255];
+
 		/// <summary>
 		/// Create a new instance of the Chunk class for storing ChunkSections (which store block data)
 		/// </summary>
@@ -34,6 +36,8 @@ namespace DragonSpire
 			{
 				ChunkParts[i] = new ChunkSection(i);
 			}
+
+			HeightMapGenerator.GenerateHeightMap(this);
 		}
 
 		internal void SetBlock(BlockLocation BL, Material mat, byte meta = 0)
